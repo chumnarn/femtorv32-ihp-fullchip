@@ -20,6 +20,23 @@ make check
 make floorplan TAG=fp01
 make openroad TAG=fp01
 make full TAG=chip01
+
+
+make floorplan TAG=fp01
+make openroad TAG=fp01
+
+make place TAG=fp01
+make openroad TAG=fp01
+
+make cts TAG=fp01
+make openroad TAG=fp01
+
+make route  TAG=fp01
+make openroad TAG=fp01
+
+make full TAG=chip01
+make openroad TAG=fp01
+make klayout TAG=fp01
 ```
 
 The first `make check` downloads the 149-KiB bondpad GDS from the official
