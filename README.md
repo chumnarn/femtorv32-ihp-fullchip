@@ -27,3 +27,11 @@ IHP LibreLane template because that bondpad is not yet part of the PDK.
 
 For staged debugging, use `make synth`, `make floorplan`, `make pdn`, `make place`,
 `make cts`, and `make route` with the same `TAG`.
+
+
+## ดูเพิ่ม
+
+- ต้นฉบับ ITA-CORES: https://github.com/FelipeFFerreira/ITA-CORES
+- FemtoRV32: https://github.com/BrunoLevy/learn-fpga
+- LibreLane: https://librelane.readthedocs.io/
+- IHP Open PDK: https://github.com/IHP-GmbH/IHP-Open-PDK
