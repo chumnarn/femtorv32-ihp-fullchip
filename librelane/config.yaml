@@ -1,0 +1,194 @@
+meta:
+  version: 3
+  flow: Chip
+  substituting_steps:
+    # Official IHP template suppresses this checker because Magic may report
+    # benign overlap in the full-chip assembly.
+    Checker.IllegalOverlap: null
+
+DESIGN_NAME: chip_top
+VERILOG_FILES:
+  - dir::../src/femtorv32_quark.v
+  - dir::../src/ihp_sram_64k.v
+  - dir::../src/chip_core.sv
+  - dir::../src/chip_top.sv
+VERILOG_DEFINES: [FUNCTIONAL]
+USE_SLANG: true
+SLANG_ARGUMENTS: ['--keep-hierarchy']
+PRIMARY_GDSII_STREAMOUT_TOOL: klayout
+
+# 16 pads, four per side. Names are the real instance paths in chip_top.sv.
+PAD_SOUTH:
+  - clk_pad
+  - rst_n_pad
+  - 'vdd_pads\[0\].vdd_pad'
+  - 'vss_pads\[0\].vss_pad'
+PAD_EAST:
+  - uart_rx_pad
+  - uart_tx_pad
+  - 'iovdd_pads\[0\].iovdd_pad'
+  - 'iovss_pads\[0\].iovss_pad'
+PAD_NORTH:
+  - 'leds\[3\].led_pad'
+  - 'leds\[2\].led_pad'
+  - 'leds\[1\].led_pad'
+  - 'leds\[0\].led_pad'
+PAD_WEST:
+  - 'vdd_pads\[1\].vdd_pad'
+  - 'vss_pads\[1\].vss_pad'
+  - 'iovdd_pads\[1\].iovdd_pad'
+  - 'iovss_pads\[1\].iovss_pad'
+
+PNR_SDC_FILE: dir::chip_top.sdc
+SIGNOFF_SDC_FILE: dir::chip_top.sdc
+FALLBACK_SDC: dir::chip_top.sdc
+
+VDD_NETS: [VDD]
+GND_NETS: [VSS]
+CLOCK_PORT: clk_PAD
+CLOCK_NET: clk_pad/p2c
+CLOCK_PERIOD: 50.0
+
+# 3.2 mm square die.  SRAM macro is 416.64 x 336.46 um before E/W rotation.
+# Core leaves the same 365 um pad-ring margin used by the official template.
+FP_SIZING: absolute
+DIE_AREA: [0, 0, 3200, 3200]
+CORE_AREA: [365, 365, 2835, 2835]
+PL_TARGET_DENSITY_PCT: 25
+GRT_ALLOW_CONGESTION: true
+
+# Pad/bondpad assembly
+PAD_BONDPAD_NAME: bondpad_70x70_novias
+EXTRA_GDS:
+  - dir::../ip/bondpad_70x70_novias/gds/bondpad_70x70_novias.gds
+EXTRA_LEFS:
+  - dir::../ip/bondpad_70x70_novias/lef/bondpad_70x70_novias.lef
+IGNORE_DISCONNECTED_MODULES:
+  - bondpad_70x70_novias
+
+# PDN baseline from official IHP template
+PDN_CORE_RING: true
+PDN_CORE_RING_VWIDTH: 15
+PDN_CORE_RING_HWIDTH: 15
+PDN_CORE_RING_VSPACING: 5
+PDN_CORE_RING_HSPACING: 5
+PDN_CORE_RING_CONNECT_TO_PADS: true
+PDN_ENABLE_PINS: false
+PDN_CFG: dir::pdn_cfg.tcl
+MAGIC_EXT_UNIQUE: notopports
+
+# SRAM macro views + deterministic placement
+MACROS:
+  RM_IHPSG13_1P_1024x32_c2_bm_bist:
+    gds:
+      - pdk_dir::libs.ref/sg13g2_sram/gds/RM_IHPSG13_1P_1024x32_c2_bm_bist.gds
+    lef:
+      - pdk_dir::libs.ref/sg13g2_sram/lef/RM_IHPSG13_1P_1024x32_c2_bm_bist.lef
+    vh:
+      - pdk_dir::libs.ref/sg13g2_sram/verilog/RM_IHPSG13_1P_1024x32_c2_bm_bist.v
+      - pdk_dir::libs.ref/sg13g2_sram/verilog/RM_IHPSG13_1P_core_behavioral_bm_bist.v
+    lib:
+      "*_typ_1p20V_25C":
+        - pdk_dir::libs.ref/sg13g2_sram/lib/RM_IHPSG13_1P_1024x32_c2_bm_bist_typ_1p20V_25C.lib
+      "*_fast_1p32V_m40C":
+        - pdk_dir::libs.ref/sg13g2_sram/lib/RM_IHPSG13_1P_1024x32_c2_bm_bist_fast_1p32V_m55C.lib
+      "*_slow_1p08V_125C":
+        - pdk_dir::libs.ref/sg13g2_sram/lib/RM_IHPSG13_1P_1024x32_c2_bm_bist_slow_1p08V_125C.lib
+    instances:
+      i_chip_core.u_sram.u_bank00:
+        location: [450, 550]
+        orientation: E
+      i_chip_core.u_sram.u_bank01:
+        location: [450, 1020]
+        orientation: E
+      i_chip_core.u_sram.u_bank02:
+        location: [450, 1490]
+        orientation: E
+      i_chip_core.u_sram.u_bank03:
+        location: [450, 1960]
+        orientation: E
+      i_chip_core.u_sram.u_bank04:
+        location: [830, 550]
+        orientation: E
+      i_chip_core.u_sram.u_bank05:
+        location: [830, 1020]
+        orientation: E
+      i_chip_core.u_sram.u_bank06:
+        location: [830, 1490]
+        orientation: E
+      i_chip_core.u_sram.u_bank07:
+        location: [830, 1960]
+        orientation: E
+      i_chip_core.u_sram.u_bank08:
+        location: [1995, 550]
+        orientation: W
+      i_chip_core.u_sram.u_bank09:
+        location: [1995, 1020]
+        orientation: W
+      i_chip_core.u_sram.u_bank10:
+        location: [1995, 1490]
+        orientation: W
+      i_chip_core.u_sram.u_bank11:
+        location: [1995, 1960]
+        orientation: W
+      i_chip_core.u_sram.u_bank12:
+        location: [2375, 550]
+        orientation: W
+      i_chip_core.u_sram.u_bank13:
+        location: [2375, 1020]
+        orientation: W
+      i_chip_core.u_sram.u_bank14:
+        location: [2375, 1490]
+        orientation: W
+      i_chip_core.u_sram.u_bank15:
+        location: [2375, 1960]
+        orientation: W
+
+PDN_MACRO_CONNECTIONS:
+- "i_chip_core.u_sram.u_bank00 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank00 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank01 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank01 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank02 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank02 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank03 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank03 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank04 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank04 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank05 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank05 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank06 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank06 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank07 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank07 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank08 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank08 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank09 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank09 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank10 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank10 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank11 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank11 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank12 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank12 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank13 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank13 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank14 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank14 VDD VSS VDD! VSS!"
+- "i_chip_core.u_sram.u_bank15 VDD VSS VDDARRAY! VSS!"
+- "i_chip_core.u_sram.u_bank15 VDD VSS VDD! VSS!"
+
+# SRAM macro DRC flattening helpers from the official template
+MAGIC_GDS_FLATGLOB:
+  - "lvsres_*"
+  - "VIA_M1_*"
+  - "VIA_M2_*"
+  - "*_CELL_CORNER"
+  - "RSC_*"
+  - "*_CELL_SUB"
+
+# Start permissive for bring-up; tighten these for tapeout signoff.
+ERROR_ON_TIMING_VIOLATIONS: false
+ERROR_ON_LVS_ERROR: false
+ERROR_ON_DRC_ERROR: false
+ERROR_ON_ANTENNA_ERROR: false
