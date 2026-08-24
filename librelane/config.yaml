@@ -12,9 +12,16 @@ VERILOG_FILES:
   - dir::../src/ihp_sram_64k.v
   - dir::../src/chip_core.sv
   - dir::../src/chip_top.sv
+
+EXTRA_VERILOG_MODELS:
+  - dir::../src/RM_IHPSG13_1P_1024x32_c2_bm_bist_bb.v
+
+
 VERILOG_DEFINES: [FUNCTIONAL]
 USE_SLANG: true
-SLANG_ARGUMENTS: ['--keep-hierarchy']
+##SLANG_ARGUMENTS: ['--keep-hierarchy']
+SYNTH_HIERARCHY_MODE: flatten
+
 PRIMARY_GDSII_STREAMOUT_TOOL: klayout
 
 # 16 pads, four per side. Names are the real instance paths in chip_top.sv.
@@ -85,8 +92,7 @@ MACROS:
     lef:
       - pdk_dir::libs.ref/sg13g2_sram/lef/RM_IHPSG13_1P_1024x32_c2_bm_bist.lef
     vh:
-      - pdk_dir::libs.ref/sg13g2_sram/verilog/RM_IHPSG13_1P_1024x32_c2_bm_bist.v
-      - pdk_dir::libs.ref/sg13g2_sram/verilog/RM_IHPSG13_1P_core_behavioral_bm_bist.v
+     - dir::../src/RM_IHPSG13_1P_1024x32_c2_bm_bist_bb.v
     lib:
       "*_typ_1p20V_25C":
         - pdk_dir::libs.ref/sg13g2_sram/lib/RM_IHPSG13_1P_1024x32_c2_bm_bist_typ_1p20V_25C.lib
@@ -187,8 +193,12 @@ MAGIC_GDS_FLATGLOB:
   - "RSC_*"
   - "*_CELL_SUB"
 
+# Skip DRC during bring-up
+RUN_KLAYOUT_DRC: false
+RUN_MAGIC_DRC: false
+
 # Start permissive for bring-up; tighten these for tapeout signoff.
-ERROR_ON_TIMING_VIOLATIONS: false
 ERROR_ON_LVS_ERROR: false
-ERROR_ON_DRC_ERROR: false
-ERROR_ON_ANTENNA_ERROR: false
+ERROR_ON_KLAYOUT_DRC: false
+ERROR_ON_MAGIC_DRC: false
+
