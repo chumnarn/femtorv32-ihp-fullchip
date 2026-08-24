@@ -96,15 +96,15 @@ module chip_core (
     wire [ 3:0] sram_wmask = cpu_wmask;
     wire [31:0] sram_rdata;
 
-    (* keep_hierarchy *) ihp_sram_64k u_sram (
-        .clk    (clk),
-        .re     (sram_re),
-        .we     (sram_we),
-        .addr   (sram_addr),
-        .wdata  (sram_wdata),
-        .wmask  (sram_wmask),
-        .rdata  (sram_rdata)
-    );
+ihp_sram_64k u_sram (
+    .clk   (clk),
+    .re    (sram_re),
+    .we    (sram_we),
+    .addr  (sram_addr),
+    .wdata (sram_wdata),
+    .wmask (sram_wmask),
+    .rdata (sram_rdata)
+);
 
     // ---------------------------------------------------------------------
     // 5)  LED register

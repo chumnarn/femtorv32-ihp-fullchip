@@ -92,13 +92,13 @@ module chip_top (
         end
     endgenerate
 
-    (* keep_hierarchy *) chip_core i_chip_core (
-        .clk     (clk_i),
-        .rst_n   (rst_n_i),
-        .led     (led_o),
-        .uart_tx (uart_tx_o),
-        .uart_rx (uart_rx_i)
-    );
+chip_core i_chip_core (
+    .clk     (clk_i),
+    .rst_n   (rst_n_i),
+    .led     (led_o),
+    .uart_tx (uart_tx_o),
+    .uart_rx (uart_rx_i)
+);
 endmodule
 
 `default_nettype wire

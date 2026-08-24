@@ -51,6 +51,37 @@ module FemtoRV32(
    parameter RESET_ADDR       = 32'h00000000;
    parameter ADDR_WIDTH       = 24;
 
+   // -------------------------------------------------------------------------
+   // Forward declarations for strict SystemVerilog frontends (Slang/Verilator)
+   // -------------------------------------------------------------------------
+   reg  [31:2] instr;
+   wire        writeBack;
+   wire [31:0] writeBackData;
+   wire        funct3IsShift;
+   wire [31:0] LOAD_data;
+   wire [15:0] LOAD_halfword;
+   wire  [7:0] LOAD_byte;
+
+   localparam FETCH_INSTR_bit     = 0;
+   localparam WAIT_INSTR_bit      = 1;
+   localparam EXECUTE_bit         = 2;
+   localparam WAIT_ALU_OR_MEM_bit = 3;
+   localparam NB_STATES           = 4;
+
+   localparam FETCH_INSTR     = 1 << FETCH_INSTR_bit;
+   localparam WAIT_INSTR      = 1 << WAIT_INSTR_bit;
+   localparam EXECUTE         = 1 << EXECUTE_bit;
+   localparam WAIT_ALU_OR_MEM = 1 << WAIT_ALU_OR_MEM_bit;
+
+   (* onehot *)
+   reg [NB_STATES-1:0] state;
+
+`ifdef NRV_COUNTER_WIDTH
+   reg [`NRV_COUNTER_WIDTH-1:0] cycles;
+`else
+   reg [31:0] cycles;
+`endif
+
  /***************************************************************************/
  // Instruction decoding.
  /***************************************************************************/
@@ -149,7 +180,7 @@ module FemtoRV32(
      (funct3Is[7]  ? aluIn1 & aluIn2                                 : 32'b0) |
      (funct3IsShift ? aluReg                                         : 32'b0) ;
 
-   wire funct3IsShift = funct3Is[1] | funct3Is[5];
+   assign funct3IsShift = funct3Is[1] | funct3Is[5];
 
    always @(posedge clk) begin
       if(aluWr) begin
@@ -195,8 +226,8 @@ module FemtoRV32(
    /***************************************************************************/
 
    reg  [ADDR_WIDTH-1:0] PC; // The program counter.
-   reg  [31:2] instr;        // Latched instruction. Note that bits 0 and 1 are
-                             // ignored (not used in RV32I base instr set).
+   // instr is declared near the top of the module for strict frontends.
+   // Bits 0 and 1 are ignored (not used in RV32I base instruction set).
 
    wire [ADDR_WIDTH-1:0] PCplus4 = PC + 4;
 
@@ -223,7 +254,7 @@ module FemtoRV32(
    // The value written back to the register file.
    /***************************************************************************/
 
-   wire [31:0] writeBackData  =
+   assign writeBackData  =
       (isSYSTEM            ? cycles     : 32'b0) |  // SYSTEM
       (isLUI               ? Uimm       : 32'b0) |  // LUI
       (isALU               ? aluOut     : 32'b0) |  // ALUreg, ALUimm
@@ -253,15 +284,15 @@ module FemtoRV32(
    wire LOAD_sign =
 	!instr[14] & (mem_byteAccess ? LOAD_byte[7] : LOAD_halfword[15]);
 
-   wire [31:0] LOAD_data =
+   assign LOAD_data =
          mem_byteAccess ? {{24{LOAD_sign}},     LOAD_byte} :
      mem_halfwordAccess ? {{16{LOAD_sign}}, LOAD_halfword} :
                           mem_rdata ;
 
-   wire [15:0] LOAD_halfword =
+   assign LOAD_halfword =
 	       loadstore_addr[1] ? mem_rdata[31:16] : mem_rdata[15:0];
 
-   wire  [7:0] LOAD_byte =
+   assign LOAD_byte =
 	       loadstore_addr[0] ? LOAD_halfword[15:8] : LOAD_halfword[7:0];
 
    // STORE
@@ -293,25 +324,13 @@ module FemtoRV32(
    // And, last but not least, the state machine.
    /*************************************************************************/
 
-   localparam FETCH_INSTR_bit     = 0;
-   localparam WAIT_INSTR_bit      = 1;
-   localparam EXECUTE_bit         = 2;
-   localparam WAIT_ALU_OR_MEM_bit = 3;
-   localparam NB_STATES           = 4;
-
-   localparam FETCH_INSTR     = 1 << FETCH_INSTR_bit;
-   localparam WAIT_INSTR      = 1 << WAIT_INSTR_bit;
-   localparam EXECUTE         = 1 << EXECUTE_bit;
-   localparam WAIT_ALU_OR_MEM = 1 << WAIT_ALU_OR_MEM_bit;
-
-   (* onehot *)
-   reg [NB_STATES-1:0] state;
+   // State encoding and state register are declared near the top of the module.
 
    // The signals (internal and external) that are determined
    // combinatorially from state and other signals.
 
    // register write-back enable.
-   wire writeBack = ~(isBranch | isStore ) &
+   assign writeBack = ~(isBranch | isStore ) &
 	            (state[EXECUTE_bit] | state[WAIT_ALU_OR_MEM_bit]);
 
    // The memory-read signal.
@@ -373,11 +392,7 @@ module FemtoRV32(
    // Cycle counter
    /***************************************************************************/
 
-`ifdef NRV_COUNTER_WIDTH
-   reg [`NRV_COUNTER_WIDTH-1:0]  cycles;
-`else
-   reg [31:0]  cycles;
-`endif
+   // cycles is declared near the top of the module.
    always @(posedge clk) cycles <= cycles + 1;
 
 `ifdef BENCH
