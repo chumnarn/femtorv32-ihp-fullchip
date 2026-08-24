@@ -65,7 +65,7 @@ module chip_core (
 
     FemtoRV32 #(
         .RESET_ADDR (32'h0000_0000),   // boot from BRAM @ 0
-        .ADDR_WIDTH (24)               // 16 MB byte-addressable space
+        .ADDR_WIDTH (32)               // full 32-bit address space for MMIO @ 0x1000_0000
     ) u_cpu (
         .clk       (clk),
         .reset     (rst),
@@ -96,7 +96,7 @@ module chip_core (
     wire [ 3:0] sram_wmask = cpu_wmask;
     wire [31:0] sram_rdata;
 
-ihp_sram_64k u_sram (
+    ihp_sram_64k u_sram (
     .clk   (clk),
     .re    (sram_re),
     .we    (sram_we),
@@ -156,9 +156,11 @@ ihp_sram_64k u_sram (
         end
     end
     assign uart_tx = utx_reg;
-    // uart_rx currently unused — left as a stub for future echo.
-    // (libre lane will not complain about unused input when WIRED_INPUTS warnings
-    // are kept at default.)
+
+    // Keep UART RX in the functional cone so the input pad is not optimized away.
+    // bit[0] = TX ready (1 when transmitter is idle)
+    // bit[1] = current UART RX pin level
+    wire [31:0] uart_status = {30'b0, uart_rx, ~utx_active};
 
     // ---------------------------------------------------------------------
     // 7)  Slave read mux + busy back to CPU
@@ -176,7 +178,7 @@ ihp_sram_64k u_sram (
         end else if (utx_sel) begin
             rdata_r = {31'd0, utx_active};
         end else if (ust_sel) begin
-            rdata_r = 32'h0;          // divider not implemented
+            rdata_r = uart_status;
         end
     end
 
