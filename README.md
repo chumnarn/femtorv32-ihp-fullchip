@@ -48,6 +48,7 @@ For staged debugging, use `make synth`, `make floorplan`, `make pdn`, `make plac
 
 ## ดูเพิ่ม
 
+- FemtoRV32 SoC on IHP SG13G2: https://github.com/chumnarn/femtorv32-ihp
 - ต้นฉบับ ITA-CORES: https://github.com/FelipeFFerreira/ITA-CORES
 - FemtoRV32: https://github.com/BrunoLevy/learn-fpga
 - LibreLane: https://librelane.readthedocs.io/
