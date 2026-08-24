@@ -17,7 +17,7 @@
 
 `default_nettype none
 
-(* keep_hierarchy *)
+
 module ihp_sram_64k (
     input  wire        clk,
     input  wire        re,
@@ -47,7 +47,7 @@ module ihp_sram_64k (
             read_bank_q <= bank_sel;
     end
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank00 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank00 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd0)),
         .A_WEN       (we & (bank_sel == 4'd0)),
@@ -67,7 +67,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank01 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank01 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd1)),
         .A_WEN       (we & (bank_sel == 4'd1)),
@@ -87,7 +87,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank02 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank02 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd2)),
         .A_WEN       (we & (bank_sel == 4'd2)),
@@ -107,7 +107,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank03 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank03 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd3)),
         .A_WEN       (we & (bank_sel == 4'd3)),
@@ -127,7 +127,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank04 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank04 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd4)),
         .A_WEN       (we & (bank_sel == 4'd4)),
@@ -147,7 +147,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank05 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank05 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd5)),
         .A_WEN       (we & (bank_sel == 4'd5)),
@@ -167,7 +167,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank06 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank06 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd6)),
         .A_WEN       (we & (bank_sel == 4'd6)),
@@ -187,7 +187,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank07 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank07 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd7)),
         .A_WEN       (we & (bank_sel == 4'd7)),
@@ -207,7 +207,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank08 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank08 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd8)),
         .A_WEN       (we & (bank_sel == 4'd8)),
@@ -227,7 +227,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank09 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank09 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd9)),
         .A_WEN       (we & (bank_sel == 4'd9)),
@@ -247,7 +247,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank10 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank10 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd10)),
         .A_WEN       (we & (bank_sel == 4'd10)),
@@ -267,7 +267,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank11 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank11 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd11)),
         .A_WEN       (we & (bank_sel == 4'd11)),
@@ -287,7 +287,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank12 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank12 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd12)),
         .A_WEN       (we & (bank_sel == 4'd12)),
@@ -307,7 +307,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank13 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank13 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd13)),
         .A_WEN       (we & (bank_sel == 4'd13)),
@@ -327,7 +327,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank14 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank14 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd14)),
         .A_WEN       (we & (bank_sel == 4'd14)),
@@ -347,7 +347,7 @@ module ihp_sram_64k (
         .A_BIST_BM   (32'b0)
     );
 
-    RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank15 (
+    (* keep *) RM_IHPSG13_1P_1024x32_c2_bm_bist u_bank15 (
         .A_CLK       (clk),
         .A_MEN       ((re | we) & (bank_sel == 4'd15)),
         .A_WEN       (we & (bank_sel == 4'd15)),
